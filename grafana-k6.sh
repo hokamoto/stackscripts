@@ -46,6 +46,9 @@ ufw allow 3000/tcp
 sed -i "s/^#NTP=/NTP=pool.ntp.org/" /etc/systemd/timesyncd.conf
 systemctl restart systemd-timesyncd
 
+## Install iftop
+apt install iftop -y
+
 ## Install InfluxDB
 apt install influxdb -y
 sed -i -e "s/# max-body-size = 25000000/max-body-size = 100000000/g" /etc/influxdb/influxdb.conf
