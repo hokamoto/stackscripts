@@ -141,7 +141,8 @@ EOF
 fi
 
 # Configure Login Message
-echo "##############################################################################" > /etc/motd
+echo "Maintainer: Hideki Okamoto @ Akamai Technologies" > /etc/motd
+echo "##############################################################################" >> /etc/motd
 echo "You can launch a Docker container with each of the following commands:" >> /etc/motd
 echo "" >> /etc/motd
 echo -e "\e[33mpytorch\e[m: Log into an interactive shell of a container with Python and PyTorch." >> /etc/motd
@@ -151,8 +152,6 @@ echo -e "\e[33mtensorflow-notebookm\e[m: Start Jupyter Notebook with TensorFlow 
 echo "" >> /etc/motd
 echo "Other commands:" >> /etc/motd
 echo -e "\e[33mstop-all-containers\e[m: Stop all running containers." >> /etc/motd
-echo "" >> /etc/motd
-echo "Maintainer: Hideki Okamoto @ Akamai Technologies" >> /etc/motd
 echo "##############################################################################" >> /etc/motd
 
 wall "StackScripts is finished. Please check /var/log/stackscript.log"
