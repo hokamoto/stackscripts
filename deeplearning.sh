@@ -127,6 +127,8 @@ alias tensorflow="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit 
 alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/pytorch:22.11-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
 alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/tensorflow:22.11-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
 alias stop-all-containers="docker kill \$(docker ps -q)"
+
+nvidia-smi
 EOF
 else
     cat > /root/.bash_profile <<'EOF'
