@@ -86,9 +86,9 @@ EOF
 fi
 
 # Install CUDA drivers
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+wget -nv https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
 mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
+wget -nv https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
 dpkg -i cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
 cp /var/cuda-repo-ubuntu2204-12-0-local/cuda-*-keyring.gpg /usr/share/keyrings/
 apt update
@@ -128,7 +128,9 @@ alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=
 alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/tensorflow:22.11-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
 alias stop-all-containers="docker kill \$(docker ps -q)"
 
-nvidia-smi
+if [[ `nvidia-smi` == *failed* ]]; then
+	echo -e "\e[31mGPU is not available. This StackScript should be used for GPU instances.\e[m"
+fi
 EOF
 else
     cat > /root/.bash_profile <<'EOF'
@@ -138,7 +140,9 @@ alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=
 alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -d nvcr.io/nvidia/tensorflow:22.11-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
 alias stop-all-containers="docker kill \$(docker ps -q)"
 
-nvidia-smi
+if [[ `nvidia-smi` == *failed* ]]; then
+	echo -e "\e[31mGPU is not available. This StackScript should be used for GPU instances.\e[m"
+fi
 EOF
 fi
 
