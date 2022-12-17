@@ -94,11 +94,6 @@ cp /var/cuda-repo-ubuntu2204-12-0-local/cuda-*-keyring.gpg /usr/share/keyrings/
 apt update
 apt -y install cuda-drivers
 
-# Install Docker
-curl https://get.docker.com | sh
-systemctl enable docker
-systemctl start docker
-
 # Install NVIDIA Container Toolkit
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | gpg --dearmor > /etc/apt/trusted.gpg.d/nvidia-docker-key.gpg
