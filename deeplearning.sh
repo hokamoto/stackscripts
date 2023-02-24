@@ -149,7 +149,7 @@ echo "" >> /etc/motd
 echo -e "\e[33mpytorch\e[m: Log into an interactive shell of a container with Python and PyTorch." >> /etc/motd
 echo -e "\e[33mtensorflow\e[m: Log into an interactive shell of a container with Python and TensorFlow." >> /etc/motd
 echo -e "\e[33mpytorch-notebook\e[m: Start Jupyter Notebook with PyTorch as a daemon. You can access it at http://[Instance IP address]/" >> /etc/motd
-echo -e "\e[33mtensorflow-notebookm\e[m: Start Jupyter Notebook with TensorFlow as a daemon. You can access it at http://[Instance IP address]/" >> /etc/motd
+echo -e "\e[33mtensorflow-notebook\e[m: Start Jupyter Notebook with TensorFlow as a daemon. You can access it at http://[Instance IP address]/" >> /etc/motd
 echo "" >> /etc/motd
 echo "Other commands:" >> /etc/motd
 echo -e "\e[33mstop-all-containers\e[m: Stop all running containers." >> /etc/motd
