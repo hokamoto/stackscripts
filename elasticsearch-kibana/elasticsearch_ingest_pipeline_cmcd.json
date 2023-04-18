@@ -1,0 +1,131 @@
+{
+    "processors": [
+        {
+            "rename": {
+                "field": "cmcd",
+                "target_field": "cmcd_tmp"
+            }
+        },
+        {
+            "urldecode": {
+                "field": "cmcd_tmp"
+            }
+        },
+        {
+            "gsub": {
+                "field": "cmcd_tmp",
+                "pattern": "^//.+/",
+                "replacement": ""
+            }
+        },
+        {
+            "gsub": {
+                "field": "cmcd_tmp",
+                "pattern": "\\\\",
+                "replacement": ""
+            }
+        },
+        {
+            "gsub": {
+                "field": "cmcd_tmp",
+                "pattern": "(?<![a-zA-Z0-9])su(?![a-zA-Z0-9])",
+                "replacement": "su=true"
+            }
+        },
+        {
+            "kv": {
+                "field": "cmcd_tmp",
+                "field_split": ",",
+                "value_split": "=",
+                "target_field": "cmcd",
+                "strip_brackets": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.br",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.bl",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.d",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.dl",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.mtp",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.pr",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.rtp",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.tb",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "cmcd.v",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "remove": {
+                "field": "cmcd_tmp"
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "cmcd",
+                "value": {
+                    "raw_data": "{{cmcd_tmp}}"
+                },
+                "ignore_failure": true
+            }
+        },
+        {
+            "remove": {
+                "field": "cmcd_tmp",
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        }
+    ]
+}

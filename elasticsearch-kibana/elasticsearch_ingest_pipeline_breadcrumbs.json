@@ -1,0 +1,83 @@
+{
+    "processors": [
+        {
+            "rename": {
+                "field": "breadcrumbs",
+                "target_field": "breadcrumbs_tmp"
+            }
+        },
+        {
+            "urldecode": {
+                "field": "breadcrumbs_tmp"
+            }
+        },
+        {
+            "gsub": {
+                "field": "breadcrumbs_tmp",
+                "pattern": "^//BC/",
+                "replacement": ""
+            }
+        },
+        {
+            "kv": {
+                "field": "breadcrumbs_tmp",
+                "field_split": ",",
+                "value_split": "=",
+                "target_field": "breadcrumbs",
+                "trim_key": "\\[",
+                "strip_brackets": true
+            }
+        },
+        {
+            "convert": {
+                "field": "breadcrumbs.a",
+                "type": "ip",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "breadcrumbs.k",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "breadcrumbs.l",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+                "field": "breadcrumbs.m",
+                "type": "integer",
+                "ignore_missing": true
+            }
+        },
+        {
+            "remove": {
+                "field": "breadcrumbs_tmp"
+            }
+        }
+    ],
+    "on_failure": [
+        {
+            "set": {
+                "field": "breadcrumbs",
+                "value": {
+                    "raw_data": "{{breadcrumbs_tmp}}"
+                },
+                "ignore_failure": true
+            }
+        },
+        {
+            "remove": {
+                "field": "breadcrumbs_tmp",
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        }
+    ]
+}

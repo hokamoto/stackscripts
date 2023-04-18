@@ -1,67 +1,15 @@
 {
-    "index_patterns": [
-        "datastream2*"
-    ],
     "template": {
+        "settings": {
+            "index": {
+                "default_pipeline": "datastream2-ingest-pipeline"
+            }
+        },
         "mappings": {
-            "_routing": {
-                "required": false
-            },
             "numeric_detection": false,
-            "dynamic": true,
-            "_source": {
-                "excludes": [],
-                "includes": [],
-                "enabled": true
-            },
-            "dynamic_templates": [],
             "date_detection": false,
+            "dynamic_templates": [],
             "properties": {
-                "country": {
-                    "type": "keyword"
-                },
-                "referer": {
-                    "type": "keyword"
-                },
-                "reqPort": {
-                    "type": "keyword"
-                },
-                "rspContentLen": {
-                    "coerce": true,
-                    "ignore_malformed": true,
-                    "type": "integer"
-                },
-                "reqMethod": {
-                    "type": "keyword"
-                },
-                "streamId": {
-                    "type": "keyword"
-                },
-                "city": {
-                    "type": "keyword"
-                },
-                "lastByte": {
-                    "type": "keyword"
-                },
-                "reqTimeSec": {
-                    "format": "epoch_second",
-                    "ignore_malformed": true,
-                    "type": "date"
-                },
-                "securityRules": {
-                    "type": "keyword"
-                },
-                "tlsOverheadTimeMSec": {
-                    "coerce": true,
-                    "ignore_malformed": true,
-                    "type": "integer"
-                },
-                "errorCode": {
-                    "type": "keyword"
-                },
-                "range": {
-                    "type": "keyword"
-                },
                 "UA": {
                     "type": "keyword"
                 },
@@ -71,20 +19,61 @@
                 "billingRegion": {
                     "type": "keyword"
                 },
-                "objSize": {
+                "bytes": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
                 },
-                "rspContentType": {
+                "cacheStatus": {
                     "type": "keyword"
                 },
-                "transferTimeMSec": {
+                "cacheable": {
+                    "type": "keyword"
+                },
+                "city": {
+                    "type": "keyword"
+                },
+                "cliIP": {
+                    "type": "ip"
+                },
+                "cookie": {
+                    "type": "keyword"
+                },
+                "country": {
+                    "type": "keyword"
+                },
+                "cp": {
+                    "type": "keyword"
+                },
+                "customField": {
+                    "type": "keyword"
+                },
+                "dnsLookupTimeMSec": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
                 },
-                "dnsLookupTimeMSec": {
+                "edgeIP": {
+                    "type": "ip"
+                },
+                "errorCode": {
+                    "type": "keyword"
+                },
+                "ewExecutionInfo": {
+                    "type": "text"
+                },
+                "ewUsageInfo": {
+                    "type": "text"
+                },
+                "lastByte": {
+                    "type": "keyword"
+                },
+                "maxAgeSec": {
+                    "coerce": true,
+                    "ignore_malformed": true,
+                    "type": "integer"
+                },
+                "objSize": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
@@ -94,15 +83,16 @@
                     "ignore_malformed": true,
                     "type": "integer"
                 },
-                "totalBytes": {
-                    "coerce": true,
-                    "ignore_malformed": true,
-                    "type": "integer"
-                },
-                "cacheable": {
+                "proto": {
                     "type": "keyword"
                 },
-                "state": {
+                "queryStr": {
+                    "type": "keyword"
+                },
+                "range": {
+                    "type": "keyword"
+                },
+                "referer": {
                     "type": "keyword"
                 },
                 "reqEndTimeMSec": {
@@ -113,16 +103,47 @@
                 "reqHost": {
                     "type": "keyword"
                 },
+                "reqId": {
+                    "type": "keyword"
+                },
+                "reqMethod": {
+                    "type": "keyword"
+                },
                 "reqPath": {
                     "type": "keyword"
                 },
-                "cliIP": {
-                    "type": "ip"
-                },
-                "cookie": {
+                "reqPort": {
                     "type": "keyword"
                 },
-                "turnAroundTimeMSec": {
+                "reqTimeSec": {
+                    "format": "epoch_second",
+                    "ignore_malformed": true,
+                    "type": "date"
+                },
+                "rspContentLen": {
+                    "coerce": true,
+                    "ignore_malformed": true,
+                    "type": "integer"
+                },
+                "rspContentType": {
+                    "type": "keyword"
+                },
+                "securityRules": {
+                    "type": "keyword"
+                },
+                "serverCountry": {
+                    "type": "keyword"
+                },
+                "state": {
+                    "type": "keyword"
+                },
+                "statusCode": {
+                    "type": "keyword"
+                },
+                "streamId": {
+                    "type": "keyword"
+                },
+                "tlsOverheadTimeMSec": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
@@ -130,66 +151,44 @@
                 "tlsVersion": {
                     "type": "keyword"
                 },
-                "cacheStatus": {
-                    "type": "keyword"
-                },
-                "serverCountry": {
-                    "type": "keyword"
-                },
-                "cp": {
-                    "type": "keyword"
-                },
-                "ewExecutionInfo": {
-                    "type": "text"
-                },
-                "version": {
-                    "type": "version"
-                },
-                "customField": {
-                    "type": "keyword"
-                },
-                "edgeIP": {
-                    "type": "ip"
-                },
-                "reqId": {
-                    "type": "keyword"
-                },
-                "maxAgeSec": {
+                "totalBytes": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
                 },
-                "ewUsageInfo": {
-                    "type": "text"
-                },
-                "bytes": {
+                "transferTimeMSec": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
                 },
-                "proto": {
-                    "type": "keyword"
+                "turnAroundTimeMSec": {
+                    "coerce": true,
+                    "ignore_malformed": true,
+                    "type": "integer"
                 },
                 "uncompressedSize": {
                     "coerce": true,
                     "ignore_malformed": true,
                     "type": "integer"
                 },
+                "version": {
+                    "type": "version"
+                },
                 "xForwardedFor": {
                     "type": "keyword"
                 },
+                "cmcd": {
+                    "type": "object"
+                },
                 "breadcrumbs": {
-                    "type": "text"
-                },
-                "queryStr": {
-                    "type": "keyword"
-                },
-                "statusCode": {
-                    "type": "keyword"
+                    "type": "object"
                 }
             }
         }
     },
-    "composed_of": [],
-    "priority": 300
+    "index_patterns": [
+        "datastream2",
+        "datastream2-*"
+    ],
+    "composed_of": []
 }

@@ -1,0 +1,14 @@
+{
+    "processors": [
+        {
+            "pipeline": {
+                "name": "datastream2-ingest-pipeline-cmcd"
+            }
+        },
+        {
+            "pipeline": {
+                "name": "datastream2-ingest-pipeline-breadcrumbs"
+            }
+        }
+    ]
+}
