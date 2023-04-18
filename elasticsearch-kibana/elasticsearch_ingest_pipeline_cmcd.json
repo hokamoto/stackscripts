@@ -28,8 +28,8 @@
         {
             "gsub": {
                 "field": "cmcd_tmp",
-                "pattern": "(?<![a-zA-Z0-9])su(?![a-zA-Z0-9])",
-                "replacement": "su=true"
+                "pattern": "(?<=,|^)([a-zA-Z0-9]+)(?=(,|$))",
+                "replacement": "$1=true"
             }
         },
         {
