@@ -178,10 +178,96 @@
                     "type": "keyword"
                 },
                 "cmcd": {
-                    "type": "object"
+                    "properties": {
+                        "bl": {
+                            "type": "long"
+                        },
+                        "br": {
+                            "type": "long"
+                        },
+                        "cid": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "d": {
+                            "type": "long"
+                        },
+                        "mtp": {
+                            "type": "long"
+                        },
+                        "ot": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "sf": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "sid": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "su": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "tb": {
+                            "type": "long"
+                        }
+                    }
                 },
                 "breadcrumbs": {
-                    "type": "object"
+                    "properties": {
+                        "a": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "c": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
+                        "k": {
+                            "type": "long"
+                        },
+                        "l": {
+                            "type": "long"
+                        }
+                    }
                 }
             }
         }
