@@ -227,6 +227,15 @@
                                 }
                             }
                         },
+                        "st": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "ignore_above": 256
+                                }
+                            }
+                        },
                         "su": {
                             "type": "text",
                             "fields": {
@@ -242,32 +251,7 @@
                     }
                 },
                 "breadcrumbs": {
-                    "properties": {
-                        "a": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
-                        },
-                        "c": {
-                            "type": "text",
-                            "fields": {
-                                "keyword": {
-                                    "type": "keyword",
-                                    "ignore_above": 256
-                                }
-                            }
-                        },
-                        "k": {
-                            "type": "long"
-                        },
-                        "l": {
-                            "type": "long"
-                        }
-                    }
+                    "type": "text"
                 }
             }
         }
