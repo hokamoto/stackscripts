@@ -125,7 +125,7 @@ cat > /etc/td-agent/td-agent.conf <<EOF
   s3_bucket $OS_BUCKETNAME
   s3_endpoint https://$OS_REGION.linodeobjects.com
   s3_region $OS_REGION
-  path logs/
+  path logs/%Y/%m/%d/
   <buffer time>
     @type file
     compress gzip
