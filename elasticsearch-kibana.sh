@@ -138,4 +138,15 @@ curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:$ELASTIC_ADMIN_PAS
 # Change the password for 'elastic' user
 curl --cacert /etc/elasticsearch/certs/http_ca.crt -u elastic:$ELASTIC_ADMIN_PASSWORD -X POST "http://localhost:9200/_security/user/elastic/_password" -H 'Content-Type: application/json' -d "{ \"password\" : \"$ELASTICSEARCH_PASSWORD\" }"
 
+# Generate a README file
+cat > /root/README <<EOF
+Configuration files
+- /etc/elasticsearch/elasticsearch.yml
+- /etc/kibana/kibana.yml
+
+Log files
+- /var/log/elasticsearch/
+- /var/log/kibana/
+EOF
+
 wall "StackScripts is finished. Please check /var/log/stackscript.log"
