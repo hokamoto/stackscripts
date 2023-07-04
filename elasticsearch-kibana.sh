@@ -57,7 +57,7 @@ apt-get install elasticsearch
 sed -z -i -e "s/xpack\.security\.http\.ssl:\n  enabled: true/xpack.security.http.ssl:\n  enabled: false/" /etc/elasticsearch/elasticsearch.yml
 
 mkdir /etc/systemd/system/elasticsearch.service.d
-echo -e "[Service]\nTimeoutStartSec=180" | sudo tee /etc/systemd/system/elasticsearch.service.d/startup-timeout.conf
+echo -e "[Service]\nTimeoutStartSec=300" | sudo tee /etc/systemd/system/elasticsearch.service.d/startup-timeout.conf
 systemctl daemon-reload
 systemctl enable elasticsearch.service
 systemctl start elasticsearch.service
