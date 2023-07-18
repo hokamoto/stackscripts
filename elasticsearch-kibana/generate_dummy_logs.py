@@ -4,17 +4,27 @@ import random
 import time
 import logging
 
+duration = 60 * 60 * 24 * 30    # 30 days
+
 # Instantiate the Faker generator
 fake = Faker()
 
 # Create a connection
 es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}], basic_auth=('ds2user', 'ds2password'))
 
+# Generate the fixed sets for each field to control the cardinalities
+ua_set = [fake.user_agent() for _ in range(20)]
+cliip_set = [fake.ipv4() for _ in range(1000)]
+edgeip_set = [fake.ipv4() for _ in range(100)]
+reqhost_set = [fake.domain_name() for _ in range(3)]
+referer_set = [fake.uri() for _ in range(300)]
+reqpath_set = [fake.uri() for _ in range(5000)]
+
 # Function to create a fake "document"
 def create_fake_log():
     return {
-        "reqTimeSec": str((time.time() - random.uniform(1, 2592000))),
-        "UA": fake.user_agent(),
+        "reqTimeSec": str((time.time() - random.uniform(1, duration))),
+        "UA": random.choice(ua_set),
         "accLang": "-",
         "billingRegion": str(random.randint(1, 10)),
         "breadcrumbs": "-",
@@ -22,13 +32,13 @@ def create_fake_log():
         "cacheStatus": str(random.randint(0, 1)),
         "cacheable": str(random.randint(0, 1)),
         "city": fake.city(),
-        "cliIP": fake.ipv4(),
+        "cliIP": random.choice(cliip_set),
         "cookie": "-",
         "country": fake.country_code(),
         "cp": str(random.randint(1000000, 2000000)),
         "customField": "ctt:0",
         "dnsLookupTimeMSec": "-",
-        "edgeIP": fake.ipv4(),
+        "edgeIP": random.choice(edgeip_set),
         "errorCode": "-",
         "ewExecutionInfo": "-",
         "ewUsageInfo": "-",
@@ -39,12 +49,12 @@ def create_fake_log():
         "proto": random.choice(['HTTP/1.1', 'HTTP/2']),
         "queryStr": "-",
         "range": "-",
-        "referer": fake.uri(),
+        "referer": random.choice(referer_set),
         "reqEndTimeMSec": str(random.randint(100, 200)),
-        "reqHost": fake.domain_name(),
+        "reqHost": random.choice(reqhost_set),
         "reqId": str(random.randint(100000, 200000)),
         "reqMethod": random.choice(['GET', 'POST', 'PUT', 'DELETE']),
-        "reqPath": fake.uri(),
+        "reqPath": random.choice(reqpath_set),
         "reqPort": "443",
         "rspContentLen": str(random.randint(500, 100000)),
         "rspContentType": random.choice(['text/html', 'application/json']),
