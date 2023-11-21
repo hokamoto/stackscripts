@@ -2,7 +2,11 @@
     "template": {
         "settings": {
             "index": {
-                "default_pipeline": "datastream2-ingest-pipeline"
+                "default_pipeline": "datastream2-ingest-pipeline",
+                "lifecycle": {
+                    "name": "datastream2-ilm",
+                    "rollover_alias": "datastream2"
+                }
             }
         },
         "mappings": {
@@ -257,7 +261,6 @@
         }
     },
     "index_patterns": [
-        "datastream2",
         "datastream2-*"
     ],
     "composed_of": []
