@@ -23,11 +23,11 @@ source <ssinclude StackScriptID=401712>
 source <ssinclude StackScriptID=666912>
 
 ## OS fine-tuning (https://www.elastic.co/guide/en/elasticsearch/reference/current/setting-system-settings.html)
-cat >> /etc/security/limits.conf <<EOF
+cat > /etc/security/limits.d/20-elasticsearch.conf <<EOF
 elasticsearch  -  nofile  65535
 EOF
 
-cat >> /etc/sysctl.conf <<EOF
+cat > /etc/sysctl.d/20-elasticsearch.conf <<EOF
 vm.max_map_count=262144
 net.ipv4.tcp_retries2=5
 EOF
