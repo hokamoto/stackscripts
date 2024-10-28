@@ -8,7 +8,7 @@
 
 #<UDF name="os_access_key" label="(Optional) Access Key of Linode Object Storage" default="">
 #<UDF name="os_secret_key" label="(Optional) Secret Key of Linode Object Storage" default="">
-#<UDF name="os_region" label="(Optional) Region of Linode Object Storage" oneOf=",us-east-1,eu-central-1,ap-south-1,us-southeast-1" default="">
+#<UDF name="os_region" label="(Optional) Region of Linode Object Storage" oneOf="nl-ams-1,us-southeast-1,in-maa-1,us-ord-1,eu-central-1,id-cgk-1,us-lax-1,es-mad-1,us-mia-1,it-mil-1,us-east-1,jp-osa-1,fr-par-1,br-gru-1,us-sea-1,ap-south-1,se-sto-1,us-iad-1" default="">
 #<UDF name="os_bucketname" label="(Optional) Bucket Name of Linode Object Storage" default="">
 
 ## Enable logging
@@ -86,41 +86,53 @@ EOF
 fi
 
 # Install CUDA drivers
-wget -nv https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
-mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget -nv https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
-dpkg -i cuda-repo-ubuntu2204-12-0-local_12.0.0-525.60.13-1_amd64.deb
-cp /var/cuda-repo-ubuntu2204-12-0-local/cuda-*-keyring.gpg /usr/share/keyrings/
-apt update
-apt -y install cuda-drivers
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-ubuntu2404.pin
+mv cuda-ubuntu2404.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-repo-ubuntu2404-12-6-local_12.6.2-560.35.03-1_amd64.deb
+dpkg -i cuda-repo-ubuntu2404-12-6-local_12.6.2-560.35.03-1_amd64.deb
+cp /var/cuda-repo-ubuntu2404-12-6-local/cuda-*-keyring.gpg /usr/share/keyrings/
+apt-get update
+apt-get -y install cuda-toolkit-12-6
+
+# Install NVIDIA Driver
+apt-get install -y nvidia-driver-560
+
+# Install Docker
+apt-get install -y ca-certificates curl
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Install NVIDIA Container Toolkit
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | gpg --dearmor > /etc/apt/trusted.gpg.d/nvidia-docker-key.gpg
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | tee /etc/apt/sources.list.d/nvidia-docker.list
-apt update
-apt install -y nvidia-docker2
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+apt-get update
+apt-get install -y nvidia-container-toolkit
+nvidia-ctk runtime configure --runtime=docker
 systemctl restart docker
 
 # Download Docker images
-docker image pull nvcr.io/nvidia/pytorch:22.11-py3
-docker image pull nvcr.io/nvidia/tensorflow:22.11-tf2-py3
+docker image pull nvcr.io/nvidia/pytorch:24.10-py3
+docker image pull nvcr.io/nvidia/tensorflow:24.10-tf2-py3
 
 # Create a shared directory on the host system
 mkdir -p /root/shared
 
 # Deploy a sample Jupyter notebook
 cat > "/root/shared/Voice Recognition with OpenAI Whisper.ipynb" <<'EOF'
-{"cells":[{"cell_type":"markdown","id":"35e669b9","metadata":{},"source":["Maintainer: Hideki Okamoto @ Akamai Technologies"]},{"cell_type":"markdown","id":"49ee943e","metadata":{},"source":["# Installing OpenAI Whisper"]},{"cell_type":"code","execution_count":null,"id":"b5f495dd","metadata":{"scrolled":true},"outputs":[],"source":["# Installing FFmpeg\n","# https://ffmpeg.org/\n","%env DEBIAN_FRONTEND=noninteractive\n","!apt update\n","!apt -y install ffmpeg\n","\n","# Installing OpenAI Whisper\n","# https://github.com/openai/whisper\n","!pip install git+https://github.com/openai/whisper.git"]},{"cell_type":"markdown","id":"fa235b46","metadata":{},"source":["# Downloading a sample speech\n","If you want to try with another language, change \"en\" to the language code you prefer."]},{"cell_type":"code","execution_count":null,"id":"b94bd983","metadata":{},"outputs":[],"source":["import IPython.display as ipd\n","\n","!wget -O audio.mp3 \"https://datasets-server.huggingface.co/assets/common_voice/--/en/train/1/audio/audio.mp3\"\n","ipd.Audio(\"audio.mp3\")"]},{"cell_type":"markdown","id":"0e5ed68b","metadata":{},"source":["# Recognizing the speech with Whisper"]},{"cell_type":"code","execution_count":null,"id":"ecf5dac2","metadata":{"scrolled":true},"outputs":[],"source":["!whisper --device cuda --model large audio.mp3"]}],"metadata":{"kernelspec":{"display_name":"Python 3 (ipykernel)","language":"python","name":"python3"},"language_info":{"codemirror_mode":{"name":"ipython","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8.10"}},"nbformat":4,"nbformat_minor":5}
+{ "cells": [ { "cell_type": "markdown", "id": "35e669b9", "metadata": {}, "source": [ "Maintainer: Hideki Okamoto @ Akamai Technologies" ] }, { "cell_type": "markdown", "id": "49ee943e", "metadata": {}, "source": [ "# Installing OpenAI Whisper" ] }, { "cell_type": "code", "execution_count": null, "id": "b5f495dd", "metadata": { "scrolled": true }, "outputs": [], "source": [ "# Installing FFmpeg\n", "# https://ffmpeg.org/\n", "%env DEBIAN_FRONTEND=noninteractive\n", "!apt update\n", "!apt -y install ffmpeg\n", "\n", "# Installing OpenAI Whisper\n", "# https://github.com/openai/whisper\n", "!pip install git+https://github.com/openai/whisper.git" ] }, { "cell_type": "markdown", "id": "fa235b46", "metadata": {}, "source": [ "# Downloading a sample speech\n", "If you want to try with another language, change \"en\" to the language code you prefer." ] }, { "cell_type": "code", "execution_count": null, "id": "b94bd983", "metadata": {}, "outputs": [], "source": [ "import IPython.display as ipd\n", "\n", "!wget -O audio.wav \"https://github.com/voxserv/audio_quality_testing_samples/raw/refs/heads/master/testaudio/48000/test01_20s.wav\"\n", "ipd.Audio(\"audio.wav\")" ] }, { "cell_type": "markdown", "id": "0e5ed68b", "metadata": {}, "source": [ "# Recognizing the speech with Whisper" ] }, { "cell_type": "code", "execution_count": null, "id": "ecf5dac2", "metadata": { "scrolled": true }, "outputs": [], "source": [ "!whisper --device cuda --model large audio.wav" ] } ], "metadata": { "kernelspec": { "display_name": "Python 3 (ipykernel)", "language": "python", "name": "python3" }, "language_info": { "codemirror_mode": { "name": "ipython", "version": 3 }, "file_extension": ".py", "mimetype": "text/x-python", "name": "python", "nbconvert_exporter": "python", "pygments_lexer": "ipython3", "version": "3.10.12" } }, "nbformat": 4, "nbformat_minor": 5 } 
 EOF
 
 # Define command aliases
 if [ -n "$OS_ACCESS_KEY" ] && [ -n "$OS_SECRET_KEY" ] && [ -n "$OS_REGION" ] && [ -n "$OS_BUCKETNAME" ]; then
     cat > /root/.bash_profile <<'EOF'
-alias pytorch="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -it nvcr.io/nvidia/pytorch:22.11-py3"
-alias tensorflow="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -it nvcr.io/nvidia/tensorflow:22.11-tf2-py3"
-alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/pytorch:22.11-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
-alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/tensorflow:22.11-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
+alias pytorch="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -it nvcr.io/nvidia/pytorch:24.10-py3"
+alias tensorflow="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -it nvcr.io/nvidia/tensorflow:24.10-tf2-py3"
+alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/pytorch:24.10-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
+alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ -v /mnt/data/:/workspace/OBJECT-STORAGE/ --rm -d nvcr.io/nvidia/tensorflow:24.10-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
 alias stop-all-containers="docker kill \$(docker ps -q)"
 
 if [[ `nvidia-smi` == *failed* ]]; then
@@ -129,10 +141,10 @@ fi
 EOF
 else
     cat > /root/.bash_profile <<'EOF'
-alias pytorch="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -it nvcr.io/nvidia/pytorch:22.11-py3"
-alias tensorflow="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -it nvcr.io/nvidia/tensorflow:22.11-tf2-py3"
-alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -d nvcr.io/nvidia/pytorch:22.11-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
-alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -d nvcr.io/nvidia/tensorflow:22.11-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
+alias pytorch="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -it nvcr.io/nvidia/pytorch:24.10-py3"
+alias tensorflow="docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -it nvcr.io/nvidia/tensorflow:24.10-tf2-py3"
+alias pytorch-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -d nvcr.io/nvidia/pytorch:24.10-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
+alias tensorflow-notebook="CID=\`docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -p 80:8888 -v /root/shared/:/workspace/HOST-VOLUME/ --rm -d nvcr.io/nvidia/tensorflow:24.10-tf2-py3 jupyter notebook\`; sleep 5; docker logs \$CID 2>&1 | grep token"
 alias stop-all-containers="docker kill \$(docker ps -q)"
 
 if [[ `nvidia-smi` == *failed* ]]; then
